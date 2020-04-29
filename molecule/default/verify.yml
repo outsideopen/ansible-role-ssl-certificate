@@ -1,0 +1,23 @@
+---
+- name: Verify
+  hosts: all
+  become: yes
+  gather_facts: yes
+  tasks:
+    # converge #1
+    - name: check if /etc/ssl/private/kakaw/kakaw.key exists
+      stat:
+        path: /etc/ssl/private/kakaw/kakaw.key
+      register: __kakaw_key_file
+
+    # converge #2 (combined generation)
+    - name: check if combined cert was created
+      slurp:
+        src: /etc/ssl/private/combined/combined-full.pem
+      register: __combined_data
+
+    - name: validate combined file
+      assert:
+        that:
+          - __kakaw_key_file.stat.exists
+          - __combined_data.content == 'Y2VydApjYQo='

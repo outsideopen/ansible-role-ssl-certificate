@@ -1,0 +1,21 @@
+---
+ssl_certificate_source_path: certs
+
+ssl_certificate_path: /etc/ssl/private
+ssl_certificate_path_owner: "root"
+ssl_certificate_path_group: "root"
+ssl_certificate_path_mode: "0700"
+
+ssl_certificate_owner: "root"
+ssl_certificate_group: "root"
+ssl_certificate_mode: "0440"
+
+ssl_certificate_files: "{{ ssl_certificate_files_default + ssl_certificate_files_extra }}"
+ssl_certificate_files_default:
+  - file: server.crt
+    dest: "{{ ssl_certificate_name }}.crt"
+  - file: ca.crt
+    dest: "{{ ssl_certificate_name }}-ca.crt"
+  - file: server.key
+    dest: "{{ ssl_certificate_name }}.key"
+ssl_certificate_files_extra: []

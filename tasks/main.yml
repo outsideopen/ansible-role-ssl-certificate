@@ -1,0 +1,39 @@
+---
+- name: Ensure SSL certificate root directory exists
+  file:
+    dest: "{{ ssl_certificate_path }}"
+    state: directory
+    owner: "{{ ssl_certificate_path_owner }}"
+    group: "{{ ssl_certificate_path_group }}"
+    mode:  "{{ ssl_certificate_path_mode }}"
+
+#- include: dhparam.yml
+#  when: ssl_certificate_dhparam_enable is defined
+
+- name: Ensure SSL Certificate directory exists
+  file:
+    dest: "{{ ssl_certificate_path }}/{{ ssl_certificate_name }}"
+    state: directory
+    owner: "{{ ssl_certificate_owner }}"
+    group: "{{ ssl_certificate_group }}"
+    mode: "{{ ssl_certificate_path_mode }}"
+
+- name: install SSL certificate
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ ssl_certificate_path }}/{{ ssl_certificate_name }}/{{ item.dest }}"
+    owner: "{{ ssl_certificate_owner }}"
+    group: "{{ ssl_certificate_group }}"
+    mode: "{{ ssl_certificate_mode }}"
+  with_available_file_from_items:
+    items: "{{ ssl_certificate_files }}"
+    name: certs/{{ ssl_certificate_name }}/{{ '{{' }} item.file {{ '}}' }}
+    key: src
+  tags:
+    - update-ssl
+
+- name: Create combined cert
+  include: combine_cert.yml
+  when: ssl_certificate_create_fullchain is defined and ssl_certificate_create_fullchain
+  tags:
+    - update-ssl

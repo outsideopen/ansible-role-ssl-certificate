@@ -1,0 +1,18 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+  vars:
+    ssl_certificate_name: kakaw
+  roles:
+    - ansible-role-ssl-certificate
+
+- name: Converge combined
+  hosts: all
+  become: yes
+  gather_facts: no
+  vars:
+    ssl_certificate_create_fullchain: true
+    ssl_certificate_name: combined
+  roles:
+    - ansible-role-ssl-certificate
