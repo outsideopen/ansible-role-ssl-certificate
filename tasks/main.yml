@@ -20,11 +20,13 @@
 
 - name: install SSL certificate
   copy:
-    src: "{{ item.src }}"
-    dest: "{{ ssl_certificate_path }}/{{ ssl_certificate_name }}/{{ item.dest }}"
+    src: "{{ __certificate.src }}"
+    dest: "{{ ssl_certificate_path }}/{{ ssl_certificate_name }}/{{ __certificate.dest }}"
     owner: "{{ ssl_certificate_owner }}"
     group: "{{ ssl_certificate_group }}"
     mode: "{{ ssl_certificate_mode }}"
+  loop_control:
+    loop_var: __certificate
   with_available_file_from_items:
     items: "{{ ssl_certificate_files }}"
     name: certs/{{ ssl_certificate_name }}/{{ '{{' }} item.file {{ '}}' }}
