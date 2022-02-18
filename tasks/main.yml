@@ -29,7 +29,7 @@
     loop_var: __certificate
   with_available_file_from_items:
     items: "{{ ssl_certificate_files }}"
-    name: certs/{{ ssl_certificate_name }}/{{ '{{' }} item.file {{ '}}' }}
+    name: "{{ ssl_certificate_source_path }}/{{ ssl_certificate_name }}/{{ '{{' }} item.file {{ '}}' }}"
     key: src
   tags:
     - update-ssl

@@ -7,6 +7,16 @@
   roles:
     - ansible-role-ssl-certificate
 
+- name: Converge alternate file path
+  hosts: all
+  become: yes
+  vars:
+    ssl_certificate_source_path: alt
+    ssl_certificate_name: circle
+    ssl_certificate_path: alt
+  roles:
+    - ansible-role-ssl-certificate
+
 - name: Converge combined
   hosts: all
   become: yes
@@ -16,3 +26,4 @@
     ssl_certificate_name: combined
   roles:
     - ansible-role-ssl-certificate
+
