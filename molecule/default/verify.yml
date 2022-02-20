@@ -10,7 +10,13 @@
         path: /etc/ssl/private/kakaw/kakaw.key
       register: __kakaw_key_file
 
-    # converge #2 (combined generation)
+    # converge #2 (alternate paths)
+    - name: check if /etc/ssl/alt/circle/circle.key exists
+      stat:
+        path: /etc/ssl/alt/circle/circle.key
+      register: __circle_key_file
+
+    # converge #3 (combined generation)
     - name: check if combined cert was created
       slurp:
         src: /etc/ssl/private/combined/combined-full.pem
