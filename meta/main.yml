@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  namespace: outsideopen
   role_name: ssl_certificate
   author: David Lundgren
   description: Configures a SSL Certificate

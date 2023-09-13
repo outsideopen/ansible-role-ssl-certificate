@@ -2,9 +2,20 @@
 
 Manage a SSL certificate on a server
 
-## Testing
+## Installation
 
-Testing requires Molecule and Docker 
+```ansible-galaxy install outsideopen.ssl_certificate```
+
+### Example
+```yaml
+---
+- hosts: webserver
+  roles:
+    - role: outsideopen.ssl_certificate
+      # the certs should be located in files/certs/example_com/
+      # named as server.crt, ca.crt and server.key
+      ssl_certificate_name: example_com
+```
 
 ## Role Variables
 
@@ -41,6 +52,10 @@ ssl_certificate_files_extra:
   - file: server.pfx
     dest: "{{ ssl_certificate_name }}.pfx"
 ```
+
+## Testing
+
+Testing requires Molecule and Docker
 
 ## License
 
