@@ -4,4 +4,4 @@
   become: true
 
   roles:
-    - role: ansible-root-ssl-certificate
+    - role: outsideopen.ssl_certificate

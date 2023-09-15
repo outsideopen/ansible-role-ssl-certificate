@@ -5,7 +5,7 @@
   vars:
     ssl_certificate_name: kakaw
   roles:
-    - ansible-role-ssl-certificate
+    - outsideopen.ssl_certificate
 
 - name: Converge alternate file path
   hosts: all
@@ -15,9 +15,9 @@
     ssl_certificate_name: circle
     ssl_certificate_path: alt
   roles:
-    - ansible-role-ssl-certificate
+    - outsideopen.ssl_certificate
 
-- name: Converge combined
+- name: Converge combined (with ca)
   hosts: all
   become: yes
   gather_facts: no
@@ -25,5 +25,29 @@
     ssl_certificate_create_fullchain: true
     ssl_certificate_name: combined
   roles:
-    - ansible-role-ssl-certificate
+    - outsideopen.ssl_certificate
 
+- name: Converge combined (without ca)
+  hosts: all
+  become: yes
+  gather_facts: no
+  vars:
+    ssl_certificate_create_fullchain: true
+    ssl_certificate_name: kakaw
+  roles:
+    - outsideopen.ssl_certificate
+
+- name: Converge combined (without ca & alternate paths & names)
+  hosts: all
+  become: yes
+  gather_facts: no
+  vars:
+    ssl_certificate_source_path: alt
+    ssl_certificate_name: square
+    ssl_certificate_path: alt
+    ssl_certificate_create_fullchain: true
+    ssl_certificate_source_cert_file: server.pem
+    ssl_certificate_source_key_file: server.ca
+    ssl_certificate_source_ca_file: key.pem
+  roles:
+    - outsideopen.ssl_certificate

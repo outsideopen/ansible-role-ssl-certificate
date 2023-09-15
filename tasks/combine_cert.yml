@@ -1,13 +1,12 @@
 ---
 - name: Gather combined cert data
   set_fact:
-    __ssl_combined_cert: "{{ lookup('file', ssl_certificate_source_path + '/' + ssl_certificate_name + '/server.crt') }}"
-    __ssl_combined_ca: "{{ lookup('file', ssl_certificate_source_path + '/' + ssl_certificate_name + '/ca.crt', errors='ignore') | default(false) }}"
+    __ssl_combined_cert: "{{ lookup('file', ssl_certificate_source_cert_path + ssl_certificate_source_cert_file) }}"
+    __ssl_combined_ca: "{{ lookup('file', ssl_certificate_source_cert_path + ssl_certificate_source_ca_file, errors='ignore') | default('') }}"
   tags:
     - update-ssl
 
 - name: Create combined cert
-  when: __ssl_combined_ca != False and __ssl_combined_ca|length > 0
   copy:
     content: |
       {{ __ssl_combined_cert }}
