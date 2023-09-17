@@ -22,8 +22,7 @@ jobs:
       - name: molecule
         uses: robertdebock/molecule-action@5.0.3
         with:
-          entrypoint: /usr/local/bin/molecule
-          args: lint
+          command: lint
   test:
     needs:
       - lint
