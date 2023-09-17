@@ -20,7 +20,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: molecule
-        uses: robertdebock/molecule-action@2.0.0
+        uses: robertdebock/molecule-action@5.0.3
         with:
           entrypoint: /usr/local/bin/molecule
           args: lint
@@ -40,7 +40,7 @@ jobs:
       - name: parse apparmor for mysql
         run: sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
       - name: molecule
-        uses: robertdebock/molecule-action@2.0.0
+        uses: robertdebock/molecule-action@5.0.3
         with:
           options: "--parallel all"
         env:
