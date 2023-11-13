@@ -7,9 +7,6 @@
     group: "{{ ssl_certificate_path_group }}"
     mode:  "{{ ssl_certificate_path_mode }}"
 
-#- include: dhparam.yml
-#  when: ssl_certificate_dhparam_enable is defined
-
 - name: Ensure SSL Certificate directory exists
   ansible.builtin.file:
     dest: "{{ ssl_certificate_path }}/{{ ssl_certificate_name }}"
@@ -36,6 +33,8 @@
 
 - name: Create combined cert
   ansible.builtin.include_tasks: combine_cert.yml
-  when: ssl_certificate_create_fullchain is defined and ssl_certificate_create_fullchain
+  when:
+    - ssl_certificate_create_fullchain is defined
+    - ssl_certificate_create_fullchain | bool
   tags:
     - update-ssl
