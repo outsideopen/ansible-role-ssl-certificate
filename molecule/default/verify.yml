@@ -6,47 +6,47 @@
   tasks:
     # converge #1
     - name: 1 | check if /etc/ssl/private/kakaw/kakaw.key exists
-      stat:
+      ansible.builtin.stat:
         path: /etc/ssl/private/kakaw/kakaw.key
 
     # converge #2 (alternate paths)
     - name: 2 | check if /etc/ssl/alt/circle/circle.key exists
-      stat:
+      ansible.builtin.stat:
         path: /etc/ssl/alt/circle/circle.key
 
     # converge #3 (combined generation with a ca file)
     - name: 3 | check if combined cert was created
-      slurp:
+      ansible.builtin.slurp:
         src: /etc/ssl/private/combined/combined-full.pem
       register: __combined_data
 
     - name: 3 | validate combined file
-      assert:
+      ansible.builtin.assert:
         that:
           - __combined_data.content == 'Y2VydApjYQo='
 
     # converge #4 (combined generation without a ca file)
     - name: 4 | check if combined cert was created for kakaw
-      slurp:
+      ansible.builtin.slurp:
         src: /etc/ssl/alt/square/combined-full.pem
       register: __combined_data
 
     - name: 4 | validate combined file
-      assert:
+      ansible.builtin.assert:
         that:
           - __combined_data.content == 'Y2VydApjYQo='
 
     # converge #5 (combined generation without a ca file & alt names/paths)
     - name: 5 | check if /etc/ssl/alt/square/square.key exists
-      stat:
+      ansible.builtin.stat:
         path: /etc/ssl/alt/square/square.key
 
     - name: 5 | check if combined cert was created for alt/square
-      slurp:
+      ansible.builtin.slurp:
         src: /etc/ssl/alt/square/combined-full.pem
       register: __combined_data
 
     - name: 5 | validate combined file
-      assert:
+      ansible.builtin.assert:
         that:
           - __combined_data.content == 'Y2VydApjYQo='

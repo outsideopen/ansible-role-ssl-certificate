@@ -1,13 +1,13 @@
 ---
 - name: Gather combined cert data
-  set_fact:
+  ansible.builtin.set_fact:
     __ssl_combined_cert: "{{ lookup('file', ssl_certificate_source_cert_path + ssl_certificate_source_cert_file) }}"
     __ssl_combined_ca: "{{ lookup('file', ssl_certificate_source_cert_path + ssl_certificate_source_ca_file, errors='ignore') | default('') }}"
   tags:
     - update-ssl
 
 - name: Create combined cert
-  copy:
+  ansible.builtin.copy:
     content: |
       {{ __ssl_combined_cert }}
       {{ __ssl_combined_ca }}
