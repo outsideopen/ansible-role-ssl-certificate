@@ -57,6 +57,13 @@ ssl_certificate_files_extra:
 
 Testing requires Molecule and Docker
 
+```
+pipenv shell
+pip install molecule-docker
+ansible-galaxy collection install community.general
+molecule test
+```
+
 ## License
 
 MIT

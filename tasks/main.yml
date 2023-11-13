@@ -1,25 +1,22 @@
 ---
 - name: Ensure SSL certificate root directory exists
-  file:
+  ansible.builtin.file:
     dest: "{{ ssl_certificate_path }}"
     state: directory
     owner: "{{ ssl_certificate_path_owner }}"
     group: "{{ ssl_certificate_path_group }}"
     mode:  "{{ ssl_certificate_path_mode }}"
 
-#- include: dhparam.yml
-#  when: ssl_certificate_dhparam_enable is defined
-
 - name: Ensure SSL Certificate directory exists
-  file:
+  ansible.builtin.file:
     dest: "{{ ssl_certificate_path }}/{{ ssl_certificate_name }}"
     state: directory
     owner: "{{ ssl_certificate_owner }}"
     group: "{{ ssl_certificate_group }}"
     mode: "{{ ssl_certificate_path_mode }}"
 
-- name: install SSL certificate
-  copy:
+- name: Install SSL certificate
+  ansible.builtin.copy:
     src: "{{ __certificate.src }}"
     dest: "{{ ssl_certificate_path }}/{{ ssl_certificate_name }}/{{ __certificate.dest }}"
     owner: "{{ ssl_certificate_owner }}"
@@ -35,7 +32,9 @@
     - update-ssl
 
 - name: Create combined cert
-  include: combine_cert.yml
-  when: ssl_certificate_create_fullchain is defined and ssl_certificate_create_fullchain
+  ansible.builtin.include_tasks: combine_cert.yml
+  when:
+    - ssl_certificate_create_fullchain is defined
+    - ssl_certificate_create_fullchain | bool
   tags:
     - update-ssl
