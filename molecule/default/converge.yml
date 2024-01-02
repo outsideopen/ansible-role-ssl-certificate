@@ -1,5 +1,5 @@
 ---
-- name: Converge
+- name: 1 | Converge
   hosts: all
   become: yes
   vars:
@@ -7,7 +7,7 @@
   roles:
     - outsideopen.ssl_certificate
 
-- name: Converge alternate file path
+- name: 2 | Converge alternate file path
   hosts: all
   become: yes
   vars:
@@ -17,7 +17,7 @@
   roles:
     - outsideopen.ssl_certificate
 
-- name: Converge combined (with ca)
+- name: 3 | Converge combined (with ca)
   hosts: all
   become: yes
   gather_facts: no
@@ -27,7 +27,7 @@
   roles:
     - outsideopen.ssl_certificate
 
-- name: Converge creates full chain (kakaw)
+- name: 4 | Converge creates full chain (kakaw)
   hosts: all
   become: yes
   gather_facts: no
@@ -37,7 +37,7 @@
   roles:
     - outsideopen.ssl_certificate
 
-- name: Converge combined (without ca & alternate paths & names)
+- name: 5 | Converge combined (without ca & alternate paths & names)
   hosts: all
   become: yes
   gather_facts: no
@@ -51,3 +51,15 @@
     ssl_certificate_source_ca_file: ca.pem
   roles:
     - outsideopen.ssl_certificate
+
+
+- name: 6 | Converge will full path
+  hosts: all
+  become: yes
+  vars:
+    ssl_certificate_name: kakaw
+    ssl_certificate_path_cert: /etc/custom_cert
+  tasks:
+    - name: Create certificate
+      ansible.builtin.import_role:
+        name: outsideopen.ssl_certificate

@@ -11,7 +11,7 @@
     content: |
       {{ __ssl_combined_cert }}
       {{ __ssl_combined_ca }}
-    dest: "{{ ssl_certificate_path }}/{{ ssl_certificate_name }}/{{ ssl_certificate_name }}-full.pem"
+    dest: "{{ ssl_certificate_path_cert }}/{{ ssl_certificate_name }}-full.pem"
     owner: "{{ ssl_certificate_owner }}"
     group: "{{ ssl_certificate_group }}"
     mode: "{{ ssl_certificate_mode }}"

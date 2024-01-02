@@ -9,7 +9,7 @@
 
 - name: Ensure SSL Certificate directory exists
   ansible.builtin.file:
-    dest: "{{ ssl_certificate_path }}/{{ ssl_certificate_name }}"
+    dest: "{{ ssl_certificate_path_cert }}"
     state: directory
     owner: "{{ ssl_certificate_owner }}"
     group: "{{ ssl_certificate_group }}"
@@ -18,7 +18,7 @@
 - name: Install SSL certificate
   ansible.builtin.copy:
     src: "{{ __certificate.src }}"
-    dest: "{{ ssl_certificate_path }}/{{ ssl_certificate_name }}/{{ __certificate.dest }}"
+    dest: "{{ ssl_certificate_path_cert }}/{{ __certificate.dest }}"
     owner: "{{ ssl_certificate_owner }}"
     group: "{{ ssl_certificate_group }}"
     mode: "{{ ssl_certificate_mode }}"
