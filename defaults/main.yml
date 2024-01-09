@@ -2,6 +2,7 @@
 ssl_certificate_source_path: certs
 
 ssl_certificate_path: /etc/ssl/private
+ssl_certificate_path_cert: "{{ ssl_certificate_path }}/{{ ssl_certificate_name }}"
 ssl_certificate_path_owner: "root"
 ssl_certificate_path_group: "root"
 ssl_certificate_path_mode: "0700"

@@ -44,3 +44,9 @@
         src: /alt/square/square-full.pem
       register: __file_data
       failed_when: __file_data.content != 'Y2VydAo='
+
+    - name: 6 | check custom full path was used
+      ansible.builtin.stat:
+        path: /etc/custom_cert/kakaw.key
+      register: __full_path
+      failed_when: not __full_path.stat.exists
