@@ -7,32 +7,11 @@ lint: |
   yamllint molecule/default/converge.yml
   ansible-lint molecule/default/converge.yml
 platforms:
-  - name: instance
-    image: centos:7
-#  options:
-#    config-file: molecule/default/yaml-lint.yml
-#platformsa:
-#  - name: ubuntu-bionic
-#    image: solita/ubuntu-systemd:bionic
-#    command: ${MOLECULE_DOCKER_COMMAND:-""}
-#    volumes:
-#      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-#    pull: true
-#    privileged: true
-#    pre_build_image: true
-#    groups:
-#      - docker
-#  - name: centos
-#    image: milcom/centos7-systemd:latest
-#    privileged: true
-#    groups:
-#      - docker
+  - name: "ssl-cert-${image:-ubuntu}-${tag:-jammy}"
+    image: "${image:-ubuntu}:${tag:-jammy}"
 provisioner:
   name: ansible
-  config_options:
-    defaults:
-      stdout_callback: yaml
-      bin_ansible_callbacks: yes
+  log: False
 scenario:
   name: default
 verifier:
