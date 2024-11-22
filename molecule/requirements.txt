@@ -1,4 +1,4 @@
-molecule-docker
+molecule[docker]
 ansible-lint
 yamllint
 pydocker
