@@ -22,18 +22,19 @@ Manage a SSL certificate on a server
 
 ### defaults
 
-| Variable                    | Choices/Defaults                                | Comments                                    |
-|:----------------------------|:------------------------------------------------|:--------------------------------------------|
-| ssl_certificate_source_path | certs                                           | path under files to search for certificates |
-| ssl_certificate_path        | /etc/ssl/private                                | Where to store the certificates             |
-| ssl_certificate_path_cert   | `{ssl_certificate_path}/{ssl_certificate_name}` | Full certificate path                       |
-| ssl_certificate_path_owner  | root                                            | User to own the path                        |
-| ssl_certificate_path_group  | root                                            | Group to own the path                       |
-| ssl_certificate_path_mode   | 0700                                            | Path mode                                   |
-| ssl_certificate_owner       | root                                            | User to own the cert                        |
-| ssl_certificate_group       | root                                            | Group to own the cert                       |
-| ssl_certificate_mode        | 0440                                            | Cert mode                                   |
-| ssl_certificate_files       |                                                 | List of files to copy                       |
+| Variable                         | Choices/Defaults                                | Comments                                                                             |
+|:---------------------------------|:------------------------------------------------|:-------------------------------------------------------------------------------------|
+| ssl_certificate_create_fullchain |                                                 | Whether to create a full chain file as `{name}-full.pem`. Primarily useful for nginx |
+| ssl_certificate_files            |                                                 | List of files to copy                                                                |
+| ssl_certificate_group            | root                                            | Group to own the cert                                                                |
+| ssl_certificate_mode             | 0440                                            | Cert mode                                                                            |
+| ssl_certificate_owner            | root                                            | User to own the cert                                                                 |
+| ssl_certificate_path             | /etc/ssl/private                                | Where to store the certificates                                                      |
+| ssl_certificate_path_cert        | `{ssl_certificate_path}/{ssl_certificate_name}` | Full certificate path                                                                |
+| ssl_certificate_path_group       | root                                            | Group to own the path                                                                |
+| ssl_certificate_path_mode        | 0700                                            | Path mode                                                                            |
+| ssl_certificate_path_owner       | root                                            | User to own the path                                                                 |
+| ssl_certificate_source_path      | certs                                           | path under files to search for certificates                                          |
 
 ### ssl_certificate_files
 
@@ -63,8 +64,7 @@ Testing requires Molecule and Docker
 
 ```
 pipenv shell
-pip install molecule-docker
-ansible-galaxy collection install community.general
+pip install -r molecule/requirements.txt
 molecule test
 ```
 

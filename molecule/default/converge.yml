@@ -53,7 +53,7 @@
     - outsideopen.ssl_certificate
 
 
-- name: 6 | Converge will full path
+- name: 6 | Converge with full path
   hosts: all
   become: yes
   vars:

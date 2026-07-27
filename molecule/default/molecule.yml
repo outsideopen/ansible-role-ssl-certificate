@@ -8,25 +8,7 @@ lint: |
   ansible-lint molecule/default/converge.yml
 platforms:
   - name: instance
-    image: centos:7
-#  options:
-#    config-file: molecule/default/yaml-lint.yml
-#platformsa:
-#  - name: ubuntu-bionic
-#    image: solita/ubuntu-systemd:bionic
-#    command: ${MOLECULE_DOCKER_COMMAND:-""}
-#    volumes:
-#      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-#    pull: true
-#    privileged: true
-#    pre_build_image: true
-#    groups:
-#      - docker
-#  - name: centos
-#    image: milcom/centos7-systemd:latest
-#    privileged: true
-#    groups:
-#      - docker
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2404}-ansible:latest"
 provisioner:
   name: ansible
   config_options:
