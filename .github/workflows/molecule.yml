@@ -9,7 +9,7 @@ on:
   push:
     branches:
       - master
-    tags_ignore:
+    tags-ignore:
       - '*'
   pull_request:
 
