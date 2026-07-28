@@ -7,7 +7,9 @@ name: Ansible Molecule
 
 on:
   push:
-    tags_ignore:
+    branches:
+      - master
+    tags-ignore:
       - '*'
   pull_request:
 
@@ -32,7 +34,7 @@ jobs:
           - image: amazonlinux
             tag:   "2023"
           - image: rockylinux
-            tag:   "8"
+            tag:   "9"
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -44,9 +46,8 @@ jobs:
         with:
           python-version: '3.x'
 
-      # we specify 2.16.11 for compatibility with amazonlinux:2
       - name: Install test dependencies
-        run: pip install molecule-docker docker requests==2.31.0 ansible-core==2.16.11
+        run: pip install molecule molecule-plugins[docker]
 
       - name: molecule
         run: molecule test
