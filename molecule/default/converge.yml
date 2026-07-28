@@ -4,8 +4,16 @@
   become: yes
   vars:
     ssl_certificate_name: kakaw
+    ssl_certificate_notify:
+      - Notify of change
+  handlers:
+    - name: Notify of change
+      ansible.builtin.file:
+        path: /tmp/notify_was_called
+        state: touch
+        mode: '0644'
   roles:
-    - outsideopen.ssl_certificate
+    - name: outsideopen.ssl_certificate
 
 - name: 2 | Converge alternate file path
   hosts: all
@@ -59,6 +67,26 @@
   vars:
     ssl_certificate_name: kakaw
     ssl_certificate_path_cert: /etc/custom_cert
+  tasks:
+    - name: Create certificate
+      ansible.builtin.import_role:
+        name: outsideopen.ssl_certificate
+
+- name: 7 | Converge with custom notifications on full chain change
+  hosts: all
+  become: yes
+  handlers:
+    - name: Notify of change
+      ansible.builtin.file:
+        path: /tmp/notify_called_by_fullchain
+        state: touch
+        mode: '0644'
+  vars:
+    ssl_certificate_notify:
+      - Notify of change
+    ssl_certificate_name: kakaw
+    ssl_certificate_path_cert: /etc/custom_cert
+    ssl_certificate_create_fullchain: true
   tasks:
     - name: Create certificate
       ansible.builtin.import_role:

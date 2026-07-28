@@ -28,6 +28,7 @@ Manage a SSL certificate on a server
 | ssl_certificate_files            |                                                 | List of files to copy                                                                |
 | ssl_certificate_group            | root                                            | Group to own the cert                                                                |
 | ssl_certificate_mode             | 0440                                            | Cert mode                                                                            |
+| ssl_certificate_notify           | `[]`                                            | List of handlers that should be notified on a change                                 |
 | ssl_certificate_owner            | root                                            | User to own the cert                                                                 |
 | ssl_certificate_path             | /etc/ssl/private                                | Where to store the certificates                                                      |
 | ssl_certificate_path_cert        | `{ssl_certificate_path}/{ssl_certificate_name}` | Full certificate path                                                                |
