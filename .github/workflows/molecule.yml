@@ -45,7 +45,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies
-        run: pip install molecue molecule-plugins[docker]
+        run: pip install molecule molecule-plugins[docker]
 
       - name: molecule
         run: molecule test
