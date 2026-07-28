@@ -7,14 +7,11 @@ lint: |
   yamllint molecule/default/converge.yml
   ansible-lint molecule/default/converge.yml
 platforms:
-  - name: instance
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2404}-ansible:latest"
+  - name: "ssl-cert-${image:-ubuntu}-${tag:-jammy}"
+    image: "${image:-ubuntu}:${tag:-jammy}"
 provisioner:
   name: ansible
-  config_options:
-    defaults:
-      stdout_callback: yaml
-      bin_ansible_callbacks: yes
+  log: False
 scenario:
   name: default
 verifier:

@@ -1,0 +1,59 @@
+---
+#
+# Ansible managed
+#
+
+name: Ansible Molecule
+
+on:
+  push:
+    tags_ignore:
+      - '*'
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: molecule
+        uses: ansible/ansible-lint@main
+  test:
+    needs:
+      - lint
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: ubuntu
+            tag:   noble
+          - image: amazonlinux
+            tag:   "2023"
+          - image: rockylinux
+            tag:   "8"
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          path: "${{ github.repository }}"
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      # we specify 2.16.11 for compatibility with amazonlinux:2
+      - name: Install test dependencies
+        run: pip install molecule-docker docker requests==2.31.0 ansible-core==2.16.11
+
+      - name: molecule
+        run: molecule test
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          image: "${{ matrix.image }}"
+          tag: "${{ matrix.tag }}"
+        working-directory: "${{ github.repository }}"
+
