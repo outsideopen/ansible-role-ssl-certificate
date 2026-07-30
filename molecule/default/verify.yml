@@ -11,6 +11,12 @@
       register: __file
       failed_when: not __file.stat.exists
 
+    - name: 1 | check that the notification was called
+      ansible.builtin.stat:
+        path: /tmp/notify_was_called
+      register: __notify_path
+      failed_when: not __notify_path.stat.exists
+
     # converge #2 (alternate paths)
     - name: 2 | check if /alt/circle/circle.key exists
       ansible.builtin.stat:
@@ -50,3 +56,9 @@
         path: /etc/custom_cert/kakaw.key
       register: __full_path
       failed_when: not __full_path.stat.exists
+
+    - name: 7 | check that full chain notify was called
+      ansible.builtin.stat:
+        path: /tmp/notify_called_by_fullchain
+      register: __notify_path
+      failed_when: not __notify_path.stat.exists

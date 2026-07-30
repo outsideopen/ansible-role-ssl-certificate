@@ -15,5 +15,6 @@
     owner: "{{ ssl_certificate_owner }}"
     group: "{{ ssl_certificate_group }}"
     mode: "{{ ssl_certificate_mode }}"
+  notify: "{{ ssl_certificate_notify | default([]) }}"
   tags:
     - update-ssl

@@ -32,6 +32,7 @@
     __ssl_cert_found: "{{ lookup('first_found', params) }}"
   loop: "{{ ssl_certificate_files }}"
   when: __ssl_cert_found | length > 0
+  notify: "{{ ssl_certificate_notify | default([]) }}"
   tags:
     - update-ssl
 

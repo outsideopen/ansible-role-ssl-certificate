@@ -25,3 +25,5 @@ ssl_certificate_source_cert_path: "{{ ssl_certificate_source_path + '/' + ssl_ce
 ssl_certificate_source_ca_file: ca.crt
 ssl_certificate_source_cert_file: server.crt
 ssl_certificate_source_key_file: server.key
+
+ssl_certificate_notify: []
