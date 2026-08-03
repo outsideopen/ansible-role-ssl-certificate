@@ -22,22 +22,25 @@ Manage a SSL certificate on a server
 
 ### defaults
 
-| Variable                         | Choices/Defaults                                                | Comments                                                                             |
-|:---------------------------------|:----------------------------------------------------------------|:-------------------------------------------------------------------------------------|
-| ssl_certificate_create_fullchain |                                                                 | Whether to create a full chain file as `{name}-full.pem`. Primarily useful for nginx |
-| ssl_certificate_files            | `ssl_certificate_files_default` + `ssl_certificate_files_extra` | List of files to copy                                                                |
-| ssl_certificate_files_default    | [see below](#ssl_certificate_files)                             | Default list of files to copy                                                        |
-| ssl_certificate_files_extra      | `{}`                                                            | List of extra files to copy                                                          |
-| ssl_certificate_group            | root                                                            | Group to own the cert                                                                |
-| ssl_certificate_mode             | 0440                                                            | Cert mode                                                                            |
-| ssl_certificate_notify           | `[]`                                                            | List of handlers that should be notified on a change                                 |
-| ssl_certificate_owner            | root                                                            | User to own the cert                                                                 |
-| ssl_certificate_path             | /etc/ssl/private                                                | Where to store the certificates                                                      |
-| ssl_certificate_path_cert        | `{ssl_certificate_path}/{ssl_certificate_name}`                 | Full certificate path                                                                |
-| ssl_certificate_path_group       | root                                                            | Group to own the path                                                                |
-| ssl_certificate_path_mode        | 0700                                                            | Path mode                                                                            |
-| ssl_certificate_path_owner       | root                                                            | User to own the path                                                                 |
-| ssl_certificate_source_path      | certs                                                           | path under files to search for certificates                                          |
+| Variable                         | Choices/Defaults                                                   | Comments                                                                                                   |
+|:---------------------------------|:-------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------|
+| ssl_certificate_create_fullchain |                                                                    | Whether to create a full chain file as `{name}-full.pem`. Primarily useful for nginx                      |
+| ssl_certificate_files            | `ssl_certificate_files_default` + `ssl_certificate_files_extra`    | List of files to copy                                                                                      |
+| ssl_certificate_files_default    | [see below](#ssl_certificate_files)                                | Default list of files to copy                                                                              |
+| ssl_certificate_files_extra      | `[]`                                                               | List of extra files to copy                                                                                |
+| ssl_certificate_group            | root                                                               | Group to own the cert                                                                                      |
+| ssl_certificate_mode             | 0440                                                               | Cert mode                                                                                                  |
+| ssl_certificate_notify           | `[]`                                                               | List of handlers that should be notified on a change                                                       |
+| ssl_certificate_owner            | root                                                               | User to own the cert                                                                                       |
+| ssl_certificate_path             | /etc/ssl/private                                                   | Where to store the certificates                                                                            |
+| ssl_certificate_path_cert        | `{ssl_certificate_path}/{ssl_certificate_name}`                    | Full certificate path                                                                                      |
+| ssl_certificate_path_group       | root                                                               | Group to own the path                                                                                      |
+| ssl_certificate_path_mode        | 0700                                                               | Path mode                                                                                                  |
+| ssl_certificate_path_owner       | root                                                               | User to own the path                                                                                       |
+| ssl_certificate_source_path      | certs                                                              | path under files to search for certificates                                                                |
+| ssl_certificate_cert_content     | contents of `{ssl_certificate_source_path}/{name}/server.crt`      | Certificate data used for the default cert file and the full chain; override to supply the data directly  |
+| ssl_certificate_key_content      | contents of `{ssl_certificate_source_path}/{name}/server.key`      | Private key data used for the default key file; override to supply the data directly                      |
+| ssl_certificate_ca_content       | contents of `{ssl_certificate_source_path}/{name}/ca.crt`, if any  | CA data used for the default ca file and the full chain; override to supply the data directly              |
 
 ### ssl_certificate_files
 
@@ -63,12 +66,22 @@ ssl_certificate_files_extra:
 
 #### Supplying data
 
-If you are pulling the key or cert from a password management system (1Password or Bitwarden), you may want to supply
-the actual content instead of having a copy of the files on your system. In these cases you can use `content` to provide
-that data.
+If you are pulling the key, or cert, from a password management system (1Password or Bitwarden), you may want to supply
+the actual content instead of having a copy of the files on your system.
+
+The simplest way is to override the `ssl_certificate_cert_content`, `ssl_certificate_key_content` and
+`ssl_certificate_ca_content` variables, which back the default cert/key/ca files and the full chain:
 
 ```yaml
-ssl_certificate_files_default:
+ssl_certificate_cert_content: "{{ lookup('community.general.bitwarden', 'example.com', field='cert') | first }}"
+ssl_certificate_key_content: "{{ lookup('community.general.onepassword', 'example.com', field='private_key') }}"
+ssl_certificate_ca_content: "{{ lookup('community.general.bitwarden', 'example.com', field='ca') | first }}"
+```
+
+For extra files, or to fully replace `ssl_certificate_files_default`, each entry accepts `content` in place of `file`:
+
+```yaml
+ssl_certificate_files_extra:
   - content: "{{ lookup('community.general.bitwarden', 'example.com', field='cert') | first }}"
     dest: "{{ ssl_certificate_name }}.pem"
   - content: "{{ lookup('community.general.onepassword', 'example.com', field='private_key') }}"
