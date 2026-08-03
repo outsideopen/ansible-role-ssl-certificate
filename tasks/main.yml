@@ -5,7 +5,7 @@
     state: directory
     owner: "{{ ssl_certificate_path_owner }}"
     group: "{{ ssl_certificate_path_group }}"
-    mode:  "{{ ssl_certificate_path_mode }}"
+    mode: "{{ ssl_certificate_path_mode }}"
 
 - name: Ensure SSL Certificate directory exists
   ansible.builtin.file:
@@ -15,31 +15,32 @@
     group: "{{ ssl_certificate_group }}"
     mode: "{{ ssl_certificate_path_mode }}"
 
-- name: Install SSL certificate
+- name: Install SSL Certificate file
   ansible.builtin.copy:
-    src: "{{ __ssl_cert_found }}"
-    dest: "{{ ssl_certificate_path_cert }}/{{ item.dest }}"
+    content: "{{ content }}"
+    dest: "{{ ssl_certificate_path_cert }}/{{ item }}"
     owner: "{{ ssl_certificate_owner }}"
     group: "{{ ssl_certificate_group }}"
     mode: "{{ ssl_certificate_mode }}"
   vars:
+    ssl_item: "{{ (ssl_certificate_files | selectattr('dest', 'equalto', item) | first) }}"
+    file_path: "{{ lookup('ansible.builtin.first_found', params) | default('') }}"
+    file_content: "{{ (lookup('ansible.builtin.file', file_path) | first) if (file_path | length > 0) else '' }}"
+    content: "{{ ssl_item.content if ssl_item.content is defined else file_content }}"
     params:
-      skip: true
       files:
-        - "{{ item.file }}"
+        - "{{ ssl_item.file }}"
       paths:
-        - "{{ ssl_certificate_source_path }}/{{ ssl_certificate_name }}"
-    __ssl_cert_found: "{{ lookup('first_found', params) }}"
-  loop: "{{ ssl_certificate_files }}"
-  when: __ssl_cert_found | length > 0
+        - "{{ ssl_certificate_source_cert_path }}"
+      skip: true
+  loop: "{{ ssl_certificate_files | map(attribute='dest') | list }}"
+  when: content is truthy
   notify: "{{ ssl_certificate_notify | default([]) }}"
   tags:
     - update-ssl
 
 - name: Create combined cert
   ansible.builtin.include_tasks: combine_cert.yml
-  when:
-    - ssl_certificate_create_fullchain is defined
-    - ssl_certificate_create_fullchain | bool
+  when: ssl_certificate_create_fullchain | default(false) | bool
   tags:
     - update-ssl

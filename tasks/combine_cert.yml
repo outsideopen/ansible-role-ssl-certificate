@@ -1,16 +1,7 @@
 ---
-- name: Gather combined cert data
-  ansible.builtin.set_fact:
-    __ssl_combined_cert: "{{ lookup('file', ssl_certificate_source_cert_path + ssl_certificate_source_cert_file) }}"
-    __ssl_combined_ca: "{{ lookup('file', ssl_certificate_source_cert_path + ssl_certificate_source_ca_file, errors='ignore') | default('') }}"
-  tags:
-    - update-ssl
-
-- name: Create combined cert
+- name: Create fullchain cert
   ansible.builtin.copy:
-    content: |
-      {{ __ssl_combined_cert }}
-      {{ __ssl_combined_ca }}
+    content: "{{ [ssl_certificate_cert_content, ssl_certificate_ca_content] | select('truthy') | join('\n') }}\n"
     dest: "{{ ssl_certificate_path_cert }}/{{ ssl_certificate_name }}-full.pem"
     owner: "{{ ssl_certificate_owner }}"
     group: "{{ ssl_certificate_group }}"

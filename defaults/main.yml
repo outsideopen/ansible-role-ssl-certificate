@@ -13,17 +13,21 @@ ssl_certificate_mode: "0440"
 
 ssl_certificate_files: "{{ ssl_certificate_files_default + ssl_certificate_files_extra }}"
 ssl_certificate_files_default:
-  - file: "{{ ssl_certificate_source_cert_file }}"
+  - content: "{{ ssl_certificate_cert_content }}"
     dest: "{{ ssl_certificate_name }}.crt"
-  - file: "{{ ssl_certificate_source_ca_file }}"
+  - content: "{{ ssl_certificate_ca_content }}"
     dest: "{{ ssl_certificate_name }}-ca.crt"
-  - file: "{{ ssl_certificate_source_key_file }}"
+  - content: "{{ ssl_certificate_key_content }}"
     dest: "{{ ssl_certificate_name }}.key"
 ssl_certificate_files_extra: []
 
-ssl_certificate_source_cert_path: "{{ ssl_certificate_source_path + '/' + ssl_certificate_name + '/' }}"
+ssl_certificate_source_cert_path: "{{ [ssl_certificate_source_path, ssl_certificate_name] | path_join }}"
 ssl_certificate_source_ca_file: ca.crt
 ssl_certificate_source_cert_file: server.crt
 ssl_certificate_source_key_file: server.key
 
 ssl_certificate_notify: []
+
+ssl_certificate_cert_content: "{{ __ssl_cert_content }}"
+ssl_certificate_key_content: "{{ __ssl_key_content }}"
+ssl_certificate_ca_content: "{{ __ssl_ca_content }}"

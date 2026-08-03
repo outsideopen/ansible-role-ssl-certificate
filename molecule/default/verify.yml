@@ -1,8 +1,8 @@
 ---
 - name: Verify
   hosts: all
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
   tasks:
     # converge #1
     - name: 1 | check if /etc/ssl/private/kakaw/kakaw.key exists
@@ -14,8 +14,14 @@
     - name: 1 | check that the notification was called
       ansible.builtin.stat:
         path: /tmp/notify_was_called
-      register: __notify_path
-      failed_when: not __notify_path.stat.exists
+      register: __file
+      failed_when: not __file.stat.exists
+
+    - name: 1 | check that the extra file was created
+      ansible.builtin.stat:
+        path: /etc/ssl/private/kakaw/kakaw-custom.pem
+      register: __file
+      failed_when: not __file.stat.exists
 
     # converge #2 (alternate paths)
     - name: 2 | check if /alt/circle/circle.key exists
@@ -28,15 +34,21 @@
     - name: 3 | check if combined cert was created
       ansible.builtin.slurp:
         src: /etc/ssl/private/combined/combined-full.pem
-      register: __file_data
-      failed_when: __file_data.content != 'Y2VydApjYQo='
+      register: __data
+      failed_when: __data.content != 'Y2VydApjYQo='
 
     # converge #4 (combined generation without a ca file)
     - name: 4 | check if combined cert was created for kakaw
       ansible.builtin.slurp:
         src: /etc/ssl/private/kakaw/kakaw-full.pem
-      register: __file_data
-      failed_when: __file_data.content != 'Y2VydAo='
+      register: __data
+      failed_when: __data.content != 'Y2VydAo='
+
+    - name: 4 | check that full chain notify was called
+      ansible.builtin.stat:
+        path: /tmp/notify_called_by_fullchain
+      register: __file
+      failed_when: not __file.stat.exists
 
     # converge #5 (combined generation without a ca file & alt names/paths)
     - name: 5 | check if /alt/square/square.key exists
@@ -48,17 +60,17 @@
     - name: 5 | check if combined cert was created for alt/square
       ansible.builtin.slurp:
         src: /alt/square/square-full.pem
-      register: __file_data
-      failed_when: __file_data.content != 'Y2VydAo='
+      register: __data
+      failed_when: __data.content != 'Y2VydAo='
 
     - name: 6 | check custom full path was used
       ansible.builtin.stat:
         path: /etc/custom_cert/kakaw.key
-      register: __full_path
-      failed_when: not __full_path.stat.exists
+      register: __file
+      failed_when: not __file.stat.exists
 
-    - name: 7 | check that full chain notify was called
-      ansible.builtin.stat:
-        path: /tmp/notify_called_by_fullchain
-      register: __notify_path
-      failed_when: not __notify_path.stat.exists
+    - name: 8 | check if custom cert content was used instead of reading file
+      ansible.builtin.slurp:
+        src: /etc/custom_cert/combined.crt
+      register: __data
+      failed_when: __data.content != 'a2FrYXc='
