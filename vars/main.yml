@@ -1,0 +1,7 @@
+---
+__ssl_cert_content: "{{ lookup('file', [ssl_certificate_source_cert_path, ssl_certificate_source_cert_file] | path_join) }}"
+__ssl_key_content: "{{ lookup('file', [ssl_certificate_source_cert_path, ssl_certificate_source_key_file] | path_join) }}"
+__ssl_ca_content: "{{ lookup('file', [ssl_certificate_source_cert_path, ssl_certificate_source_ca_file] | path_join, errors='ignore') | default('') }}"
+
+__ssl_content_fullchain: "{{ [__ssl_cert_content, __ssl_ca_content] | select('truthy') | join('\n') }}\n"
+__ssl_content_cert_key: "{{ [__ssl_cert_content, __ssl_key_content, __ssl_ca_content] | select('truthy') | join('\n') }}\n"

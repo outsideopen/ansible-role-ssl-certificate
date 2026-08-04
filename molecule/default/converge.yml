@@ -1,11 +1,14 @@
 ---
 - name: 1 | Converge
   hosts: all
-  become: yes
+  become: true
   vars:
     ssl_certificate_name: kakaw
     ssl_certificate_notify:
       - Notify of change
+    ssl_certificate_files_extra:
+      - dest: kakaw-custom.pem
+        content: kakaw
   handlers:
     - name: Notify of change
       ansible.builtin.file:
@@ -17,7 +20,7 @@
 
 - name: 2 | Converge alternate file path
   hosts: all
-  become: yes
+  become: true
   vars:
     ssl_certificate_source_path: alt
     ssl_certificate_name: circle
@@ -27,8 +30,8 @@
 
 - name: 3 | Converge combined (with ca)
   hosts: all
-  become: yes
-  gather_facts: no
+  become: true
+  gather_facts: false
   vars:
     ssl_certificate_create_fullchain: true
     ssl_certificate_name: combined
@@ -37,18 +40,26 @@
 
 - name: 4 | Converge creates full chain (kakaw)
   hosts: all
-  become: yes
-  gather_facts: no
+  become: true
+  gather_facts: false
+  handlers:
+    - name: Notify of change
+      ansible.builtin.file:
+        path: /tmp/notify_called_by_fullchain
+        state: touch
+        mode: '0644'
   vars:
     ssl_certificate_create_fullchain: true
     ssl_certificate_name: kakaw
+    ssl_certificate_notify:
+      - Notify of change
   roles:
     - outsideopen.ssl_certificate
 
 - name: 5 | Converge combined (without ca & alternate paths & names)
   hosts: all
-  become: yes
-  gather_facts: no
+  become: true
+  gather_facts: false
   vars:
     ssl_certificate_source_path: alt
     ssl_certificate_name: square
@@ -60,30 +71,21 @@
   roles:
     - outsideopen.ssl_certificate
 
-
 - name: 6 | Converge with full path
   hosts: all
-  become: yes
+  become: true
   vars:
     ssl_certificate_name: kakaw
     ssl_certificate_path_cert: /etc/custom_cert
   roles:
     - outsideopen.ssl_certificate
 
-- name: 7 | Converge with custom notifications on full chain change
+- name: 7 | Use specified content instead of loading from files
   hosts: all
-  become: yes
-  handlers:
-    - name: Notify of change
-      ansible.builtin.file:
-        path: /tmp/notify_called_by_fullchain
-        state: touch
-        mode: '0644'
+  become: true
   vars:
-    ssl_certificate_notify:
-      - Notify of change
-    ssl_certificate_name: kakaw
+    ssl_certificate_name: combined
     ssl_certificate_path_cert: /etc/custom_cert
-    ssl_certificate_create_fullchain: true
+    ssl_certificate_cert_content: "kakaw"
   roles:
     - outsideopen.ssl_certificate
